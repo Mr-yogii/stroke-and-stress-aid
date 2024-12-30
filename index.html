@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroke Analyzer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .menu {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .menu button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .menu button:hover {
+            background-color: #2980b9;
+        }
+        .section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .alert {
+            color: red;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .btn-play {
+            margin-top: 10px;
+            font-size: 16px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-play:hover {
+            transform: scale(1.05);
+        }
+        .calm {
+            background-color: #00b894;
+            color: white;
+        }
+        .angry {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .sad {
+            background-color: #3498db;
+            color: white;
+        }
+        .report-card {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container {
+            margin-top: 30px;
+        }
+        .music-card 
+            background-color: #f4f6f7;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .muscle-card {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-report {
+            font-size: 18px;
+            padding: 12px 24px;
+            background-color: #9b59b6;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .btn-report:hover {
+            background-color: #8e44ad;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Stroke & Stress Aid </h1>
+
+    <div class="menu">
+        <button onclick="showSection('home')">Home</button>
+        <button onclick="showSection('pre_process')">Pre-process state</button>
+        <button onclick="showSection('post_process')">Post-process state</button>
+        <button onclick="showSection('report')">Personlized Report</button>
+    </div>
+
+    <!-- Home Section -->
+    <div id="home" class="section active">
+        <div class="card muscle-card">
+            <h3>Current Muscle Signal: <span id="muscleSignal">Loading...</span></h3>
+            <div class="container">
+                <canvas id="muscleSignalChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+        <div class="container">
+            <p>Muscle signal is being monitored and updated every 5 sec</p>
+        </div>
+    </div>
+
+    <!-- Pre-process Section -->
+    <div id="pre_process" class="section">
+        <div class="card music-card">
+            <h5>Current Music Playing:</h5>
+            <p id="currentMusic">None</p>
+            <button class="btn-play calm" onclick="playMusic('calm.mp3')">Play Calm Music</button>
+            <button class="btn-play angry" onclick="playMusic('angry.mp3')">Play Angry Music</button>
+            <button class="btn-play sad" onclick="playMusic('sad.mp3')">Play Sad Music</button>
+        </div>
+        <div class="chart-container">
+            <canvas id="musicControlChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Post-process Section -->
+<div id="post_process" class="section">
+    <h3>Post-process Stroke Instructions</h3>
+    <div class="container">
+        <button class="btn btn-warning" onclick="playStrokeInstruction()">Play Stroke Instructions</button>
+    </div>
+    <div class="alert">
+        <p id="strokeAlert">Alert: Stroke detected! Please follow the instructions below.</p>
+    </div>
+    <div class="container">
+        <canvas id="postProcessChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Added text instructions -->
+    <div class="instructions">
+        <h4>Instructions:</h4>
+        <ul>
+            <li><strong>Step 1:</strong> Check for signs of a stroke, including sudden numbness or weakness in the face, arms, or legs, especially on one side of the body.</li>
+            <li><strong>Step 2:</strong> Call emergency services immediately and inform them about the stroke symptoms.</li>
+            <li><strong>Step 3:</strong> If the person is conscious, help them stay calm and have them sit or lie down in a safe position.</li>
+            <li><strong>Step 4:</strong> Do not give the person food, drink, or any medication unless directed by a healthcare professional.</li>
+            <li><strong>Step 5:</strong> Monitor the person's breathing and pulse. If they lose consciousness and stop breathing, perform CPR.</li>
+            <li><strong>Step 6:</strong> Keep track of the time when the symptoms started as it will help medical professionals determine the best course of treatment.</li>
+        </ul>
+    </div>
+</div>
+
+
+    <!-- Report Section -->
+    <div id="report" class="section">        <div class="report-card">
+            <h3>Personilized Signal Report</h3>
+            <p id="muscleReport">Signal Value: Loading...</p>
+            <p id="currentSongReport">Current Song: Loading...</p>
+            <p id="signalStage">Signal Stage: Loading...</p>
+            <p id="bpReport">Blood Pressure: Loading...</p>
+            <p id="spo2Report">SpO2: Loading...</p>
+            <p id="hrReport">Heart Rate: Loading...</p>
+            <button class="btn-report" onclick="generatePDFReport()">Generate PDF Report</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        let muscleSignal = 0;
+        let currentMusic = 'None';
+        let signalStage = 'Normal'; // Default signal stage
+
+        // Function to generate random values for BP, SpO2, and heart rate
+        function generateRandomValues() {
+            let bp = Math.floor(Math.random() * (180 - 90 + 1)) + 90; // BP between 90 and 180
+            let spo2 = Math.floor(Math.random() * (100 - 85 + 1)) + 85; // SpO2 between 85% and 100%
+            let hr = Math.floor(Math.random() * (100 - 60 + 1)) + 60; // Heart rate between 60 and 100
+
+            return { bp, spo2, hr };
+        }
+
+        // Update muscle signal data every 5 seconds
+        setInterval(() => {
+            fetch('/muscle_signal')
+                .then(response => response.json())
+                .then(data => {
+                    muscleSignal = data.muscle_signal;
+                    document.getElementById('muscleSignal').textContent = muscleSignal;
+                    updateMuscleSignalChart(muscleSignal);
+                    updateReportSection(muscleSignal);
+
+                    // Automatically trigger stroke instructions if muscle signal exceeds 700
+                    if (muscleSignal > 700) {
+                        playStrokeInstruction();
+                    }
+                    // Automatically play music based on muscle signal
+                    if (muscleSignal <= 600) {
+                        playMusic('calm.mp3');
+                    } else if (muscleSignal > 700) {
+                        playMusic('angry.mp3');
+                    } else {
+                        playMusic('sad.mp3');
+                    }
+                });
+        }, 5000);
+
+        // Show the selected section and hide others
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            document.getElementById(section).classList.add('active');
+        }
+
+        // Function to play music based on selected file
+        function playMusic(musicFile) {
+            fetch('/play_music', {
+                method: 'POST',
+                body: new URLSearchParams({ 'music_file': musicFile }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'playing') {
+                    currentMusic = musicFile;
+                    document.getElementById('currentMusic').textContent = currentMusic;
+                }
+            });
+        }
+
+        // Function to play stroke instructions
+        function playStrokeInstruction() {
+            fetch('/play_instruction')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('strokeAlert').textContent = "Instructions: " + data.instruction;
+                });
+        }
+
+        // Function to update the report section with random values
+        function updateReportSection(muscleSignal) {
+            let { bp, spo2, hr } = generateRandomValues();
+            document.getElementById('muscleReport').textContent = `Muscle Signal Value: ${muscleSignal}`;
+            document.getElementById('currentSongReport').textContent = `Current Song: ${currentMusic}`;
+            document.getElementById('signalStage').textContent = `Signal Stage: ${signalStage}`;
+            document.getElementById('bpReport').textContent = `Blood Pressure: ${bp} mmHg`;
+            document.getElementById('spo2Report').textContent = `SpO2: ${spo2}%`;
+            document.getElementById('hrReport').textContent = `Heart Rate: ${hr} bpm`;
+        }
+
+        // Function to generate a PDF report
+        function generatePDFReport() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("Muscle Signal Report", 20, 20);
+            doc.text(`Muscle Signal Value: ${muscleSignal}`, 20, 30);
+            doc.text(`Current Song: ${currentMusic}`, 20, 40);
+            doc.text(`Signal Stage: ${signalStage}`, 20, 50);
+            doc.text(`Blood Pressure: ${document.getElementById('bpReport').textContent}`, 20, 60);
+            doc.text(`SpO2: ${document.getElementById('spo2Report').textContent}`, 20, 70);
+            doc.text(`Heart Rate: ${document.getElementById('hrReport').textContent}`, 20, 80);
+
+            doc.save("muscle_signal_report.pdf");
+        }
+
+        // Initial muscle signal chart setup
+        let muscleSignalChartCtx = document.getElementById('muscleSignalChart').getContext('2d');
+        let muscleSignalChart = new Chart(muscleSignalChartCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Muscle Signal',
+                    data: [],
+                    borderColor: 'rgb(75, 192, 192)',
+                    borderWidth: 2,
+                    fill: false,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 1000,
+                    },
+                },
+            }
+        });
+
+        function updateMuscleSignalChart(muscleSignal) {
+            muscleSignalChart.data.labels.push(new Date().toLocaleTimeString());
+            muscleSignalChart.data.datasets[0].data.push(muscleSignal);
+            if (muscleSignalChart.data.labels.length > 10) {
+                muscleSignalChart.data.labels.shift();
+                muscleSignalChart.data.datasets[0].data.shift();
+            }
+            muscleSignalChart.update();
+        }
+    </script>
+</body>
+</html>
+
